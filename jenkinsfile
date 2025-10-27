@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    docker {
+        image ' jenkins/ssh-agent:jdk17'
+        args '-v /var/run/docker.sock:/var/run/docker.sock'
+    }
     environment {
         DOCKERHUB_USER = 'vishwacloudlab'
         IMAGE_NAME = 'jenkins-docker-lab'
