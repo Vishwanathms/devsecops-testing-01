@@ -23,6 +23,26 @@ pipeline {
                 }
             }
         }
+        stage('Trivy Scan') {
+            steps {
+                sh '''
+                    mkdir -p trivy-reports
+                    docker run --rm \
+                      -v /var/run/docker.sock:/var/run/docker.sock \
+                      -v $WORKSPACE/trivy-reports:/reports \
+                      -v $HOME/.cache/trivy:/root/.cache/ \
+                      aquasec/trivy:latest image --format json --output /reports/trivy-report.json $IMAGE_NAME
+                    docker run --rm \
+                      -v $WORKSPACE/trivy-reports:/reports \
+                      aquasec/trivy:latest convert --format template --template "@contrib/html.tpl" --output /reports/trivy-report.html /reports/trivy-report.json
+                '''
+            }
+        }
+        stage('Archive Trivy Reports') {
+            steps {
+                archiveArtifacts artifacts: 'trivy-reports/*.html', allowEmptyArchive: true
+            }
+        }
     }
 
     post {
