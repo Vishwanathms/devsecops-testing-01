@@ -2,6 +2,10 @@ pipeline {
     agent {
         label 'docker-agent-vm'
     }
+    triggers {
+        pollSCM('H/3 * * * *') // checks every 3 mins, or
+        // OR use GitHub webhook instead (recommended)
+    }
     environment {
         DOCKERHUB_USER = 'vishwacloudlab'
         IMAGE_NAME = 'jenkins-docker-lab'
@@ -20,27 +24,25 @@ pipeline {
             steps {
                 script {
                     sh 'docker build -t $DOCKERHUB_USER/$IMAGE_NAME:latest python-app'
+                    sh 'docker image ls | grep $DOCKERHUB_USER/$IMAGE_NAME'
                 }
             }
         }
-        stage('Trivy Scan') {
+
+        stage('Scan Docker Image with Trivy') {
             steps {
+                // Scan and save report
                 sh '''
-                    mkdir -p trivy-reports
-                    docker run --rm \
-                      -v /var/run/docker.sock:/var/run/docker.sock \
-                      -v $WORKSPACE/trivy-reports:/reports \
-                      -v $HOME/.cache/trivy:/root/.cache/ \
-                      aquasec/trivy:latest image --format json --output /reports/trivy-report.json $IMAGE_NAME
-                    docker run --rm \
-                      -v $WORKSPACE/trivy-reports:/reports \
-                      aquasec/trivy:latest convert --format template --template "@contrib/html.tpl" --output /reports/trivy-report.html /reports/trivy-report.json
+                  mkdir -p trivy-reports
+                  trivy image --no-progress --exit-code 0 --format table -o trivy-reports/report.txt $DOCKERHUB_USER/$IMAGE_NAME
+                  cat trivy-reports/report.txt
                 '''
             }
         }
-        stage('Archive Trivy Reports') {
+ 
+        stage('Archive Trivy Report') {
             steps {
-                archiveArtifacts artifacts: 'trivy-reports/*.html', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'trivy-reports/report.txt', fingerprint: true
             }
         }
     }
