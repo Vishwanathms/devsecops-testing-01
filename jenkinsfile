@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'docker-agent-vm'
+        label 'vish-security-agent'
     }
     triggers {
         pollSCM('H/3 * * * *') // checks every 3 mins, or
