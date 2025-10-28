@@ -6,6 +6,10 @@ pipeline {
         pollSCM('H/3 * * * *') // checks every 3 mins, or
         // OR use GitHub webhook instead (recommended)
     }
+    parameters {
+        string(name: 'SONAR_ORG', defaultValue: 'vcltestorg01', description: 'SonarCloud organization key')
+        string(name: 'SONAR_PROJECT_KEY', defaultValue: 'vcltestorg01_vcltestorg01', description: 'SonarCloud project key')
+    }
     environment {
         DOCKERHUB_USER = 'vishwacloudlab'
         IMAGE_NAME = 'jenkins-docker-lab'
@@ -60,8 +64,8 @@ pipeline {
 
                         echo "=== Running SonarQube Scanner ==="
                         sonar-scanner \
-                        -Dsonar.organization=vishwanathms \
-                        -Dsonar.projectKey=Vishwanathms_gameoflife
+                        -Dsonar.organization=$SONAR_ORG \
+                        -Dsonar.projectKey=$SONAR_PROJECT_KEY
                     '''
                 }
             }
