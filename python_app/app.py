@@ -2,14 +2,16 @@ from flask import Flask, jsonify
 from redis_client import get_redis_client
 import logging
 
+
+
+app = Flask(__name__)
+redis_client = get_redis_client()
+
 # Logging Sensitive Information
 @app.route('/debug')
 def debug():
     logging.warning(f"Redis connection info: host={redis_client.connection_pool.connection_kwargs}")
     return jsonify({"status": "debug"})
-
-app = Flask(__name__)
-redis_client = get_redis_client()
 
 @app.route('/')
 def home():
