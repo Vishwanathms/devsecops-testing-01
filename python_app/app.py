@@ -53,5 +53,11 @@ def show_counter():
         value = int(value)
     return jsonify({"counter": value})
 
+# Unused Code
+def unused_function():
+    x = "This function is never called"
+    return x
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
