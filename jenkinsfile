@@ -73,7 +73,7 @@ pipeline {
                         -Dsonar.cpp.file.suffixes=- \
                         -Dsonar.objc.file.suffixes=- \
                         -Dsonar.login=$SONAR_TOKEN
-                                            '''
+                        '''
                 }
             }
         }
