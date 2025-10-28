@@ -65,8 +65,15 @@ pipeline {
                         echo "=== Running SonarQube Scanner ==="
                         sonar-scanner \
                         -Dsonar.organization="vcltestorg01" \
-                        -Dsonar.projectKey="vcltestorg01_vcltestorg01"
-                    '''
+                        -Dsonar.projectKey="vcltestorg01_vcltestorg01" \
+                        -Dsonar.host.url=https://sonarcloud.io \
+                        -Dsonar.sources=python-app \
+                        -Dsonar.python.coverage.reportPaths=coverage.xml \
+                        -Dsonar.c.file.suffixes=- \
+                        -Dsonar.cpp.file.suffixes=- \
+                        -Dsonar.objc.file.suffixes=- \
+                        -Dsonar.login=$SONAR_TOKEN
+                                            '''
                 }
             }
         }
