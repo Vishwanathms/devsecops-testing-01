@@ -83,7 +83,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'docker build -t $DOCKERHUB_USER/$IMAGE_NAME:latest python-app'
+                    sh 'docker build -t $DOCKERHUB_USER/$IMAGE_NAME:latest python_app'
                     sh 'docker image ls | grep $DOCKERHUB_USER/$IMAGE_NAME'
                 }
             }
@@ -103,6 +103,14 @@ pipeline {
         stage('Archive Trivy Report') {
             steps {
                 archiveArtifacts artifacts: 'trivy-reports/report.txt', fingerprint: true
+            }
+        }
+        stage('Deploy Docker Image') {
+            steps {
+                script {
+                    sh 'docker build -t $DOCKERHUB_USER/$IMAGE_NAME:latest python_app'
+                    sh 'docker image ls | grep $DOCKERHUB_USER/$IMAGE_NAME'
+                }
             }
         }
     }
