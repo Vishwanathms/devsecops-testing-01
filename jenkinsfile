@@ -31,7 +31,7 @@ stage('Test and Coverage') {
                 else
                     pip install pytest pytest-cov
                 fi
-                pytest --maxfail=1 --disable-warnings -q \
+                ./venv/bin/pytest --maxfail=1 --disable-warnings -q \
                     --cov=. --cov-report=xml:../coverage.xml
             '''
         }
