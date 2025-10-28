@@ -52,9 +52,8 @@ pipeline {
                     sh '''#!/bin/bash
                         set -eux
                         echo "=== Running SonarQube Scanner ==="
-                        which sonar-scanner || { echo "Sonar Scanner not found in PATH"; exit 1; }
 
-                        sonar-scanner \
+                        /opt/sonar-scanner/bin/sonar-scanner \
                         -Dsonar.login=$SONAR_TOKEN \
                         -Dsonar.projectKey=Vishwanathms_gameoflife \
                         -Dsonar.organization=Vishwanathms \
@@ -65,6 +64,8 @@ pipeline {
                 }
             }
         }
+    //                         which sonar-scanner || { echo "Sonar Scanner not found in PATH"; exit 1; }
+
         stage('Quality Gate') {
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
