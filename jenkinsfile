@@ -19,49 +19,29 @@ pipeline {
                 checkout scm
             }
         }
-stage('Test and Coverage') {
-    steps {
-        dir('python-app') {
-            sh '''#!/bin/bash
-                set -euxo pipefail
-
-                echo "=== Clean up any old venv ==="
-                rm -rf venv
-
-                echo "=== Creating Python virtual environment ==="
-                python3 -m venv venv
-
-                echo "=== Upgrading pip ==="
-                ./venv/bin/pip install --upgrade pip
-
-                echo "=== Installing dependencies (project + pytest) ==="
-                if [ -f requirements.txt ]; then
-                    ./venv/bin/pip install -r requirements.txt
-                fi
-
-                # Force install pytest and pytest-cov even if they exist globally
-                ./venv/bin/pip install --no-cache-dir --force-reinstall pytest pytest-cov
-
-                echo "=== Verifying pytest inside venv ==="
-                ./venv/bin/python -m pip show pytest || { echo "Pytest install failed"; exit 1; }
-
-                echo "=== Running pytest with coverage ==="
-                ./venv/bin/python -m pytest --maxfail=1 --disable-warnings -q \
-                    --cov=. --cov-report=xml:../coverage.xml
-            '''
+        stage('Python Setup & Test with Coverage') {
+            steps {
+                dir('python-app') {
+                    sh '''#!/bin/bash
+                        set -euxo pipefail
+                        rm -rf venv
+                        python3 -m venv venv
+                        ./venv/bin/pip install --upgrade pip
+                        ./venv/bin/pip install -r requirements.txt
+                        ./venv/bin/python -m pytest tests/ --maxfail=1 --disable-warnings -q \
+                            --cov=python-app --cov-report=xml:../coverage.xml
+                    '''
+                }
+            }
         }
-    }
-}
 
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarCloud') {
-                    sh '''
-                        # Ensure we're in the root where sonar-project.properties exists
-                        cd ${WORKSPACE}
-                        sonar-scanner \
-                          -Dsonar.projectBaseDir=python-app \
-                          -Dsonar.login=$SONAR_TOKEN
+                    sh '''#!/bin/bash
+                        set -eux
+                        # Run scanner from repo root; sonar-project.properties defines sources
+                        sonar-scanner -Dsonar.login=$SONAR_TOKEN
                     '''
                 }
             }

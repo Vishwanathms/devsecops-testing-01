@@ -1,2 +1,6 @@
-flask>=2.0
-redis>=4.0
+flask
+redis
+pytest
+pytest-cov
+requests
+gunicorn
