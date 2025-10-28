@@ -6,10 +6,7 @@ pipeline {
         pollSCM('H/3 * * * *') // checks every 3 mins, or
         // OR use GitHub webhook instead (recommended)
     }
-    // parameters {
-    //     string(name: 'SONAR_ORG', defaultValue: 'vcltestorg01', description: 'SonarCloud organization key')
-    //     string(name: 'SONAR_PROJECT_KEY', defaultValue: 'vcltestorg01_vcltestorg01', description: 'SonarCloud project key')
-    // }
+
     environment {
         DOCKERHUB_USER = 'vishwacloudlab'
         IMAGE_NAME = 'jenkins-docker-lab'
@@ -39,17 +36,6 @@ pipeline {
             }
         }
 
-        // stage('SonarQube Analysis') {
-        //     steps {
-        //         withSonarQubeEnv('SonarCloud') {
-        //             sh '''#!/bin/bash
-        //                 set -eux
-        //                 # Run scanner from repo root; sonar-project.properties defines sources
-        //                 sonar-scanner -Dsonar.login=$SONAR_TOKEN
-        //             '''
-        //         }
-        //     }
-        // }
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv(credentialsId: 'vish-sonarcloud-token', installationName: 'vish-sonarqube') {
@@ -78,7 +64,6 @@ pipeline {
                 }
             }
         }
-    //                         which sonar-scanner || { echo "Sonar Scanner not found in PATH"; exit 1; }
 
         stage('Quality Gate') {
             steps {
@@ -90,7 +75,6 @@ pipeline {
         stage('Clean up image and container') {
             steps {
                 script {
-               //     sh 'git clone git@github.com:Vishwanathms/t7.14-py-jenkins.git'
                     sh 'docker rm  jenkins_app -f || true'
                     sh 'docker image rmi $DOCKERHUB_USER/$IMAGE_NAME:latest || true' 
                 }
