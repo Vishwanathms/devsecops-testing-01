@@ -29,7 +29,7 @@ pipeline {
                         ./venv/bin/pip install --upgrade pip
                         ./venv/bin/pip install -r requirements.txt
                         ./venv/bin/python -m pytest tests/ --maxfail=1 --disable-warnings -q \
-                            --cov=python-app --cov-report=xml:../coverage.xml
+                            --cov=. --cov-report=xml:../coverage.xml
                     '''
                 }
             }
@@ -47,7 +47,13 @@ pipeline {
             }
         }
 
-
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
         stage('Clean up image and container') {
             steps {
                 script {
