@@ -19,6 +19,24 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Test and Coverage') {
+            steps {
+                dir('python-app') {
+                    sh '''
+                        python3 -m venv venv
+                        source venv/bin/activate
+                        pip install --upgrade pip
+                        if [ -f requirements.txt ]; then
+                            pip install -r requirements.txt
+                        else
+                            pip install pytest pytest-cov
+                        fi
+                        pytest --maxfail=1 --disable-warnings -q \
+                            --cov=. --cov-report=xml:../coverage.xml
+                    '''
+                }
+            }
+        }
 
         stage('SonarQube Analysis') {
             steps {
