@@ -59,13 +59,9 @@ pipeline {
                         export PATH=$SONAR_SCANNER_HOME/bin:$PATH
 
                         echo "=== Running SonarQube Scanner ==="
-                        /opt/sonar-scanner/bin/sonar-scanner \
-                        -Dsonar.login=$SONAR_TOKEN \
-                        -Dsonar.projectKey=Vishwanathms_gameoflife \
-                        -Dsonar.organization=Vishwanathms \
-                        -Dsonar.host.url=https://sonarcloud.io \
-                        -Dsonar.sources=python_app \
-                        -Dsonar.python.coverage.reportPaths=coverage.xml
+                        sonar-scanner \
+                        -Dsonar.organization=vishwanathms \
+                        -Dsonar.projectKey=Vishwanathms_gameoflife
                     '''
                 }
             }
