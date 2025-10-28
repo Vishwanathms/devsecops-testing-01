@@ -72,7 +72,8 @@ pipeline {
                         -Dsonar.c.file.suffixes=- \
                         -Dsonar.cpp.file.suffixes=- \
                         -Dsonar.objc.file.suffixes=- \
-                        -Dsonar.login=$SONAR_TOKEN
+                        -Dsonar.login=$SONAR_TOKEN \
+                        -Dsonar.exclusions=**/venv/**,**/__pycache__/**,**/tests/** \
                         '''
                 }
             }
