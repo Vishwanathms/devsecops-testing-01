@@ -23,15 +23,24 @@ stage('Test and Coverage') {
     steps {
         dir('python-app') {
             sh '''#!/bin/bash
+                set -e
+
+                echo "=== Creating Python virtual environment ==="
                 python3 -m venv venv
-                source venv/bin/activate
-                pip install --upgrade pip
+
+                echo "=== Upgrading pip and installing dependencies ==="
+                ./venv/bin/pip install --upgrade pip
                 if [ -f requirements.txt ]; then
-                    pip install -r requirements.txt
+                    ./venv/bin/pip install -r requirements.txt
                 else
-                    pip install pytest pytest-cov
+                    ./venv/bin/pip install pytest pytest-cov
                 fi
-                ./venv/bin/pytest --maxfail=1 --disable-warnings -q \
+
+                echo "=== Verifying pytest installation ==="
+                ./venv/bin/pip show pytest || echo "Pytest not found in venv!"
+
+                echo "=== Running pytest with coverage ==="
+                ./venv/bin/python -m pytest --maxfail=1 --disable-warnings -q \
                     --cov=. --cov-report=xml:../coverage.xml
             '''
         }
