@@ -1,9 +1,17 @@
 from flask import Flask, jsonify
 from redis_client import get_redis_client
+import logging
+
+
 
 app = Flask(__name__)
 redis_client = get_redis_client()
 
+# Logging Sensitive Information
+@app.route('/debug')
+def debug():
+    logging.warning(f"Redis connection info: host={redis_client.connection_pool.connection_kwargs}")
+    return jsonify({"status": "debug"})
 
 @app.route('/')
 def home():
@@ -11,13 +19,11 @@ def home():
 
 @app.route('/counter/increment', methods=['POST'])
 def increment():
-    if redis_client:
-        value = redis_client.incr('counter')
-    else:
-        value = 99  # ❌ Hardcoded fallback
+    value = redis_client.incr('counter')
     return jsonify({"counter": value})
 
-@app.route('/counter')
+
+@app.route('/counter', methods=['GET'])
 def get_counter():
     value = redis_client.get('counter')
     if value is None:
@@ -26,11 +32,6 @@ def get_counter():
         value = int(value)
     return jsonify({"counter": value})
 
-
-@app.route('/debug')
-def debug():
-    import os
-    return jsonify({"env": dict(os.environ)})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
