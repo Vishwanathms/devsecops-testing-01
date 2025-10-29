@@ -30,7 +30,7 @@ pipeline {
                         wget https://github.com/zricethezav/gitleaks/releases/download/v8.18.1/gitleaks_8.18.1_linux_x64.tar.gz
                         tar -xzf gitleaks_8.18.1_linux_x64.tar.gz
                         chmod +x gitleaks
-                        mv gitleaks /usr/local/bin/
+                        sudo mv gitleaks /usr/local/bin/
                     fi
                     
                     # Run gitleaks detect
