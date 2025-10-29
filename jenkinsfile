@@ -3,7 +3,7 @@ pipeline {
         label 'vish-security-agent'
     }
     triggers {
-        pollSCM('H/3 * * * *') // checks every 3 mins, or
+        pollSCM('H/1 * * * *') // checks every 3 mins, or
         // OR use GitHub webhook instead (recommended)
     }
 
