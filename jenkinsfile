@@ -24,6 +24,7 @@ pipeline {
             steps {
                 dir('python_app') {
                 sh '''
+                    #!/bin/bash
                     set -e
                     echo "==> Checking Python version"
                     python3 --version
