@@ -23,9 +23,27 @@ pipeline {
         stage('Python Setup & Test with Coverage') {
             steps {
                 dir('python_app') {
-                    sh './venv/bin/python -m pytest tests/ --disable-warnings --maxfail=1 --cov=. --cov-report=xml:../coverage.xml'
-                }
+                sh '''
+                    # Create virtual environment if it doesn't exist
+                    if [ ! -d "venv" ]; then
+                        python3 -m venv venv
+                    fi
+
+                    # Activate venv
+                    . venv/bin/activate
+
+                    # Upgrade pip and install dependencies
+                    pip install --upgrade pip
+                    pip install -r requirements.txt pytest pytest-cov
+
+                    # Run tests with coverage
+                    pytest tests/ --disable-warnings --maxfail=1 --cov=. --cov-report=xml:../coverage.xml
+                '''
             }
+            //     dir('python_app') {
+            //         sh './venv/bin/python -m pytest tests/ --disable-warnings --maxfail=1 --cov=. --cov-report=xml:../coverage.xml'
+            //     }
+            // }
         }
 
         stage('SonarQube Analysis') {
