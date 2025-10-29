@@ -1,10 +1,13 @@
 import pytest
 from app import app, redis_client
+import sys, os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 
 @pytest.fixture
 def client():
     app.config['TESTING'] = True
-    client = app.test_client()
+    return app.test_client()
 
     # Reset Redis before each test
     # redis_client.flushdb()
