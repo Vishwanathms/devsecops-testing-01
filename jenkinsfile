@@ -41,7 +41,7 @@ pipeline {
                     fi
                 '''
             }
-        // }
+        }
         // stage('Python Setup & Test with Coverage') {
         //     steps {
         //         dir('python_app') {
