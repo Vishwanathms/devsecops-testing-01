@@ -7,8 +7,8 @@ def client():
     client = app.test_client()
 
     # Reset Redis before each test
-    redis_client.flushdb()
-    yield client
+    # redis_client.flushdb()
+    # yield client
 
 def test_home(client):
     response = client.get('/')
