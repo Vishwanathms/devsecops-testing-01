@@ -23,27 +23,9 @@ pipeline {
         stage('Python Setup & Test with Coverage') {
             steps {
                 dir('python_app') {
-                sh '''
-                    #!/bin/bash
-                    set -e
-                    echo "==> Checking Python version"
-                    python3 --version
-                    echo "==> Remove old venv if exists (clean start)"
-                    rm -rf venv
-
-                    echo "==> Create venv"
-                    python3 -m venv venv
-
-                    echo "==> Activating virtual environment"
-                    source  venv/bin/activate
-
-                    echo "==> Upgrading pip and installing dependencies"
-                    pip install --upgrade pip
-                    pip install -r requirements.txt pytest pytest-cov
-
-                    echo "==> Running pytest with coverage"
-                    pytest tests/ --disable-warnings --maxfail=1 --cov=. --cov-report=xml:../coverage.xml
-            '''
+                  sh 'bash -c "set -eux; python3 -m venv venv && source venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt pytest pytest-cov && pytest tests/ --disable-warnings --maxfail=1 --cov=. --cov-report=xml:../coverage.xml"'
+    
+                
             }
             //     dir('python_app') {
             //         sh './venv/bin/python -m pytest tests/ --disable-warnings --maxfail=1 --cov=. --cov-report=xml:../coverage.xml'
