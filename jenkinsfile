@@ -23,7 +23,15 @@ pipeline {
         stage('Python Setup & Test with Coverage') {
             steps {
                 dir('python_app') {
-                  sh 'bash -c "set -eux; python3 -m venv venv && source venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt pytest pytest-cov && pytest tests/ --disable-warnings --maxfail=1 --cov=. --cov-report=xml:../coverage.xml"'
+                    sh '''#!/bin/bash
+                        set -euxo pipefail
+                        rm -rf venv
+                        python3 -m venv venv
+                        ./venv/bin/pip install --upgrade pip
+                        ./venv/bin/pip install -r requirements.txt
+                        ./venv/bin/python -m pytest tests/ --maxfail=1 --disable-warnings -q \
+                            --cov=. --cov-report=xml:../coverage.xml
+                    '''
     
                 
             }
