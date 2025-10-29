@@ -27,14 +27,14 @@ pipeline {
                     set -e
                     echo "==> Checking Python version"
                     python3 --version
+                    echo "==> Remove old venv if exists (clean start)"
+                    rm -rf venv
 
-                    echo "==> Creating virtual environment if missing"
-                    if [ ! -d "venv" ]; then
-                        python3 -m venv venv
-                    fi
+                    echo "==> Create venv"
+                    python3 -m venv venv
 
                     echo "==> Activating virtual environment"
-                    . venv/bin/activate
+                    source  venv/bin/activate
 
                     echo "==> Upgrading pip and installing dependencies"
                     pip install --upgrade pip
