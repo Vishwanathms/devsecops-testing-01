@@ -24,8 +24,12 @@ pipeline {
             steps {
                 dir('python_app') {
                 sh '''
+                    # Ensure Python is available
+                    python3 --version
                     # Create virtual environment if it doesn't exist
                     if [ ! -d "venv" ]; then
+                        echo "Creating Python virtual environment..."
+
                         python3 -m venv venv
                     fi
 
